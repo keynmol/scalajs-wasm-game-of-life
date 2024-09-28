@@ -21,7 +21,6 @@ lazy val gol = projectMatrix
         mod = mod.withExperimentalUseWebAssembly(true)
       }
 
-      // .withExperimentalUseWebAssembly(true) // use the Wasm backend
       mod.withModuleKind(ModuleKind.ESModule) // required by the Wasm backend
     },
     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
@@ -46,10 +45,11 @@ buildRelease := {
 
   import scala.sys.process.*
 
-  "npm run build".!
+  "npm run buildForGithubPages".!
 
   val assets = dir.getParentFile() / "dist" / "assets"
 
   IO.copyFile(outWasm.value / "main.wasm", assets / "main.wasm")
+  IO.copyFile(outWasm.value / "main.wasm.map", assets / "main.wasm.map")
 }
 
