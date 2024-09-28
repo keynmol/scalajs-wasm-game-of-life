@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game of Life</title>
+    <script type="module" crossorigin src="/assets/index-BO2FaLhS.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DNFN9Wak.css">
+  </head>
+  <body>
+    <h1>Game of Life</h1>
+    <div style="padding:12px; display:grid; grid-template-rows:1fr; grid-template-columns:1fr 1fr; width: 100%; background: lightgrey">
+
+      <div><h2>WASM</h2>
+        <div class = "button_row">
+          <button id="wasm_tick">Tick</button>
+          <button id="wasm_play">Play</button>
+          <pre id = "wasm_perf" style="display: block"></pre>
+        </div>
+        <canvas id="wasm_canvas" width="400" height = "400"></canvas>
+      </div>
+      <div><h2>JS</h2>
+        <div class = "button_row">
+          <button id="js_tick">Tick</button>
+          <button id="js_play">Play</button>
+          <pre id = "js_perf" style="display: block"></pre>
+        </div>
+        <canvas id="js_canvas" width="400" height="400"></canvas>
+      </div>
+
+    </div>
+  </body>
+</html>
