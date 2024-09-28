@@ -4,17 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/index.css" rel="stylesheet">
-    <title>Game of Life</title>
+    <title>Game of Life with Scala.js and Webassembly</title>
   </head>
-  <body>
-    <h1>Game of Life</h1>
-    <div style="padding:12px; display:grid; grid-template-rows:1fr; grid-template-columns:1fr 1fr; width: 100%; background: lightgrey">
+  <body style = "padding: 10px">
+    <h1>Game of Life with Scala.js and Webassembly</h1>
+    <p>This is a simple Conway's Game of Life application made with Scala.js, running as WASM and plain JS. 
+    The source code is available on <a href = "https://github.com/keynmol/scalajs-wasm-game-of-life">Github</a></p>
+    <p>Find me on <a href="https://x.com/velvetbaldmime">Twitter</a> or <a href = "https://github.com/keynmol">Github</a></p>
+    <div style="padding:12px; display:grid; grid-template-rows:1fr; grid-template-columns:1fr 1fr; width: 100%; ">
 
       <div><h2>WASM</h2>
         <div class = "button_row">
           <button id="wasm_tick">Tick</button>
           <button id="wasm_play">Play</button>
-          <pre id = "wasm_perf" style="display: block"></pre>
+          <pre id = "wasm_perf" style ="margin: 0px;"></pre>
         </div>
         <canvas id="wasm_canvas" width="400" height = "400"></canvas>
       </div>
@@ -22,7 +25,7 @@
         <div class = "button_row">
           <button id="js_tick">Tick</button>
           <button id="js_play">Play</button>
-          <pre id = "js_perf" style="display: block"></pre>
+          <pre id = "js_perf" style ="margin: 0px;"></pre>
         </div>
         <canvas id="js_canvas" width="400" height="400"></canvas>
       </div>

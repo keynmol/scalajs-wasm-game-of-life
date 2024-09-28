@@ -29,7 +29,18 @@ lazy val gol = projectMatrix
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-val gol_Wasm = gol.finder(WasmAxis)(V.Scala)
+val buildFast = taskKey[Unit]("")
+
+buildFast := {
+  val dir = (ThisBuild / baseDirectory).value / "build"
+  IO.createDirectory(dir)
+
+  def outWasm = gol.finder(WasmAxis)(V.Scala) / Compile / fastLinkJSOutput
+  def outJS = gol.finder(JSAxis)(V.Scala) / Compile / fastLinkJSOutput
+
+  IO.copyDirectory(outWasm.value, dir / "wasm")
+  IO.copyDirectory(outJS.value, dir / "js")
+}
 
 val buildRelease = taskKey[Unit]("")
 
@@ -52,4 +63,3 @@ buildRelease := {
   IO.copyFile(outWasm.value / "main.wasm", assets / "main.wasm")
   IO.copyFile(outWasm.value / "main.wasm.map", assets / "main.wasm.map")
 }
-
