@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/index.css" rel="stylesheet">
+    <title>Game of Life</title>
+  </head>
+  <body>
+    <h1>Game of Life</h1>
+    <div style="padding:12px; display:grid; grid-template-rows:1fr; grid-template-columns:1fr 1fr; width: 100%; background: lightgrey">
+
+      <div><h2>WASM</h2>
+        <div class = "button_row">
+          <button id="wasm_tick">Tick</button>
+          <button id="wasm_play">Play</button>
+        </div>
+        <canvas id="wasm_canvas" width="400" height = "400"></canvas>
+      </div>
+      <div><h2>JS</h2>
+        <div class = "button_row">
+          <button id="js_tick">Tick</button>
+          <button id="js_play">Play</button>
+        </div>
+        <canvas id="js_canvas" width="400" height="400"></canvas>
+      </div>
+
+    </div>
+    <script type="module" src="./gol/target/wasm-js-3/gol-fastopt/main.js"></script>
+    <script type="module" src="./gol/target/js-js-3/gol-fastopt/main.js"></script>
+  </body>
+</html>
