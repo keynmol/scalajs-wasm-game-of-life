@@ -9,3 +9,4 @@ metals.sbt
 node_modules
 dist
 .scala-build
+build

@@ -14,6 +14,7 @@
         <div class = "button_row">
           <button id="wasm_tick">Tick</button>
           <button id="wasm_play">Play</button>
+          <pre id = "wasm_perf" style="display: block"></pre>
         </div>
         <canvas id="wasm_canvas" width="400" height = "400"></canvas>
       </div>
@@ -21,12 +22,13 @@
         <div class = "button_row">
           <button id="js_tick">Tick</button>
           <button id="js_play">Play</button>
+          <pre id = "js_perf" style="display: block"></pre>
         </div>
         <canvas id="js_canvas" width="400" height="400"></canvas>
       </div>
 
     </div>
-    <script type="module" src="./gol/target/wasm-js-3/gol-fastopt/main.js"></script>
-    <script type="module" src="./gol/target/js-js-3/gol-fastopt/main.js"></script>
+    <script type="module" src="/build/js/main.js"></script>
+    <script type="module" src="/build/wasm/main.js"></script>
   </body>
 </html>

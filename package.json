@@ -5,13 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run buildScalajsRelease && vite build",
-    "buildDocker": "npm run buildScalajsReleaseDocker && vite build",
-    "preview": "vite preview",
-    "watchScalajs": "scala-cli --power package src -w -f -o scalajs-frontend.js --js-module-kind es",
-    "buildScalajs": "scala-cli --power package src -f -o scalajs-frontend.js --js-module-kind es",
-    "buildScalajsRelease": "scala-cli --power package src -f -o scalajs-frontend.js --js-mode release --js-module-kind es",
-    "buildScalajsReleaseDocker": "scala-cli --power package src -f -o scalajs-frontend.js --js-mode release --js-module-kind es --server=false"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

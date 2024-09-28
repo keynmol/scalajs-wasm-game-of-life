@@ -1,12 +1,16 @@
 import Settings.*
 
-lazy val root = project.aggregate(gol.projectRefs*).in(file("."))
+lazy val root = project.aggregate(gol.projectRefs *).in(file("."))
+
+val V = new {
+  val Scala = "3.5.1"
+}
 
 lazy val gol = projectMatrix
   .in(file("gol"))
-  .defaultAxes(VirtualAxis.js, VirtualAxis.scalaABIVersion("3.5.1"))
-  .customRow(Seq("3.5.1"), Seq(VirtualAxis.js, WasmAxis), Seq.empty)
-  .customRow(Seq("3.5.1"), Seq(VirtualAxis.js, JSAxis), Seq.empty)
+  .defaultAxes(VirtualAxis.js, VirtualAxis.scalaABIVersion(V.Scala))
+  .customRow(Seq(V.Scala), Seq(VirtualAxis.js, WasmAxis), Seq.empty)
+  .customRow(Seq(V.Scala), Seq(VirtualAxis.js, JSAxis), Seq.empty)
   .enablePlugins(ScalaJSPlugin)
   .settings(
     // Emit ES modules with the Wasm backend
@@ -21,19 +25,31 @@ lazy val gol = projectMatrix
       mod.withModuleKind(ModuleKind.ESModule) // required by the Wasm backend
     },
     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",
-
-    scalaJSUseMainModuleInitializer := true,
-
-    // // Configure Node.js (at least v22) to support the required Wasm features
-    // jsEnv := {
-    //   val config = NodeJSEnv.Config()
-    //     .withArgs(List(
-    //       "--experimental-wasm-exnref", // required
-    //       "--experimental-wasm-imported-strings", // optional (good for performance)
-    //       "--turboshaft-wasm", // optional, but significantly increases stability
-    //     ))
-    //   new NodeJSEnv(config)
-    // },
+    scalaJSUseMainModuleInitializer := true
   )
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
+
+val gol_Wasm = gol.finder(WasmAxis)(V.Scala)
+
+val buildRelease = taskKey[Unit]("")
+
+buildRelease := {
+  val dir = (ThisBuild / baseDirectory).value / "build"
+  IO.createDirectory(dir)
+
+  def outWasm = gol.finder(WasmAxis)(V.Scala) / Compile / fullLinkJSOutput
+  def outJS = gol.finder(JSAxis)(V.Scala) / Compile / fullLinkJSOutput
+
+  IO.copyDirectory(outWasm.value, dir / "wasm")
+  IO.copyDirectory(outJS.value, dir / "js")
+
+  import scala.sys.process.*
+
+  "npm run build".!
+
+  val assets = dir.getParentFile() / "dist" / "assets"
+
+  IO.copyFile(outWasm.value / "main.wasm", assets / "main.wasm")
+}
+
