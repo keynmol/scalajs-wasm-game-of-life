@@ -1,7 +1,7 @@
 # Game of Life using Scala.js and Webassembly
 
 This project implements a very simple Game of Life frontend,
-and packages it as both webassembly ans plain JS using Scala.js 1.17.0's _experimental_ Webassembly backend.
+and packages it as both webassembly and plain JS using Scala.js 1.17.0's _experimental_ Webassembly backend.
 
 [**Live demo**](https://keynmol.github.io/scalajs-wasm-game-of-life/)
 
