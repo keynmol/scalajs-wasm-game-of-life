@@ -1,7 +1,7 @@
 # Game of Life using Scala.js and Webassembly
 
 This project implements a very simple Game of Life frontend,
-and packages it as both webassembly and plain JS using Scala.js 1.17.0's _experimental_ Webassembly backend.
+and packages it as both webassembly and plain JS using Scala.js _experimental_ Webassembly backend.
 
 [**Live demo**](https://keynmol.github.io/scalajs-wasm-game-of-life/)
 
@@ -14,3 +14,8 @@ and packages it as both webassembly and plain JS using Scala.js 1.17.0's _experi
 
 Then open http://localhost:5173 and enjoy coding with live reload!
 
+## Building in release mode
+
+- `sbt clean buildRelease` will produce a static site build in `dist/` folder
+
+- `SCALAJS_VERSION=1.18.2 sbt clean buildRelease` will do the same as above, but allows setting Scala.js version
