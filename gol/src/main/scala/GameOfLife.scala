@@ -10,9 +10,12 @@ import scala.scalajs.js.Date
     )
     .asInstanceOf[dom.HTMLCanvasElement]
 
+  val info = dom.document.getElementById(s"${prefix}_info")
   val tickButton = dom.document.getElementById(s"${prefix}_tick")
   val playButton = dom.document.getElementById(s"${prefix}_play")
   val perf = dom.document.getElementById(s"${prefix}_perf")
+
+  info.innerText = s"Scala.js ${scalajs.LinkingInfo.linkerVersion}\nProduction mode: ${scalajs.LinkingInfo.productionMode}"
 
   val ctx = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
   val side = canvas.width
@@ -54,6 +57,13 @@ import scala.scalajs.js.Date
   //   ctx.stroke()
 
   var which = 0
+
+  val rollingAverage =
+    val buffer = IntCircularBuffer(1000)
+    (
+      add = (dur: Int) => buffer.add(dur),
+      avg = () => buffer.values.sum.toFloat / buffer.size
+    )
 
   val buffers = Array.fill(2)(Array.fill(cells * cells)(false))
 
@@ -134,9 +144,12 @@ import scala.scalajs.js.Date
     render()
     val t1 = Performance.now()
 
-    val fmt = f"${(t1-t0).toInt}%4d"
+    val duration = (t1-t0).toInt
 
-    perf.innerText = s"[${fmt}ms per generation]"
+    rollingAverage.add(duration)
+
+    if generations % 5 == 0 then
+      perf.innerText = s"[${rollingAverage.avg().toInt}ms rolling average per generation]"
   end tick
 
   enum GameState:
@@ -220,6 +233,27 @@ def process(s: String, row: Int, col: Int) =
   coords.result()
 
 import scalajs.js
+
+// Not thread safe, can overflow/wraparound because of using Long index
+class IntCircularBuffer(window: Int):
+  private var curIdx: Long = 0L
+  private val internal = collection.mutable.SortedMap.empty[Long, Int]
+  def add(a: Int) =
+    if internal.size < window then curIdx += 1
+    else
+      val evict = curIdx - window
+      curIdx += 1
+      internal.remove(evict)
+    end if
+
+    internal(curIdx) = a
+  end add
+
+  def values: Iterable[Int] = internal.values
+  def size = internal.size
+  def valuesInOrder: Iterable[Int] = internal.values
+end IntCircularBuffer
+
 
 @js.native
 trait Performance extends js.Object:

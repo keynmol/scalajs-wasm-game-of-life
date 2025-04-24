@@ -3,7 +3,7 @@ import Settings.*
 lazy val root = project.aggregate(gol.projectRefs *).in(file("."))
 
 val V = new {
-  val Scala = "3.5.1"
+  val Scala = "3.7.0-RC3"
 }
 
 lazy val gol = projectMatrix
@@ -42,9 +42,14 @@ buildFast := {
   IO.copyDirectory(outJS.value, dir / "js")
 }
 
-val buildRelease = taskKey[Unit]("")
+val buildRelease = inputKey[Unit]("")
 
 buildRelease := {
+  import complete.DefaultParsers._
+  val args: Seq[String] = spaceDelimited("<arg>").parsed
+
+  val command = args.headOption.getOrElse("build")
+
   val dir = (ThisBuild / baseDirectory).value / "build"
   IO.createDirectory(dir)
 
@@ -56,10 +61,12 @@ buildRelease := {
 
   import scala.sys.process.*
 
-  "npm run buildForGithubPages".!
+  s"npm run $command".!
 
   val assets = dir.getParentFile() / "dist" / "assets"
 
   IO.copyFile(outWasm.value / "main.wasm", assets / "main.wasm")
   IO.copyFile(outWasm.value / "main.wasm.map", assets / "main.wasm.map")
 }
+
+addCommandAlias("buildForGithubPages", "buildRelease buildForGithubPages")
