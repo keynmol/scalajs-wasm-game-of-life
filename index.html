@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game of Life with Scala.js and Webassembly</title>
-    <script type="module" crossorigin src="/scalajs-wasm-game-of-life/assets/index-BuMS_Gni.js"></script>
+    <script type="module" crossorigin src="/scalajs-wasm-game-of-life/assets/index-C81kS2bk.js"></script>
     <link rel="stylesheet" crossorigin href="/scalajs-wasm-game-of-life/assets/index-DNFN9Wak.css">
   </head>
   <body style = "padding: 10px">
@@ -16,6 +16,7 @@
       <button id="tick">Tick All</button>
       <button id="play">Play All</button>
       <div><h2>WASM</h2>
+        <pre id = "wasm_info" style ="margin: 0px;"></pre>
         <div class = "button_row">
           <button id="wasm_tick">Tick</button>
           <button id="wasm_play">Play</button>
@@ -24,6 +25,7 @@
         <canvas id="wasm_canvas" width="400" height = "400"></canvas>
       </div>
       <div><h2>JS</h2>
+        <pre id = "js_info" style ="margin: 0px;"></pre>
         <div class = "button_row">
           <button id="js_tick">Tick</button>
           <button id="js_play">Play</button>
