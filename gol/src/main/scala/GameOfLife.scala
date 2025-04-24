@@ -45,25 +45,17 @@ import scala.scalajs.js.Date
     ctx.fillStyle = "black"
     ctx.fillRect(x, y, cellSidePixel, cellSidePixel)
 
-  // ctx.strokeStyle = "white"
-  // ctx.lineWidth = 1
-  // for i <- 0 until cells
-  // do
-  //   ctx.moveTo(0, i * cellSidePixel)
-  //   ctx.lineTo(actualSide, i * cellSidePixel)
-  //   ctx.stroke()
-  //   ctx.moveTo(i * cellSidePixel, 0)
-  //   ctx.lineTo(i * cellSidePixel, actualSide)
-  //   ctx.stroke()
-
   var which = 0
 
-  val rollingAverage =
+  def rollingAverage() =
     val buffer = IntCircularBuffer(1000)
     (
       add = (dur: Int) => buffer.add(dur),
       avg = () => buffer.values.sum.toFloat / buffer.size
     )
+
+  val computationPerf = rollingAverage()
+  val renderingPerf = rollingAverage()
 
   val buffers = Array.fill(2)(Array.fill(cells * cells)(false))
 
@@ -121,35 +113,42 @@ import scala.scalajs.js.Date
   def make(row: Int, col: Int, value: Boolean) =
     inactive(offset(row, col)) = value
 
-  def tick() =
+  inline def measure(inline register: Int => Unit)(inline f: => Unit) =
     val t0 = Performance.now()
-    val buffer = inactive
-    for
-      row <- 0 until cells
-      col <- 0 until cells
-    do
-      val alive = isLive(row, col)
-      val aliveNeighbours = countNeighbours(row, col)
-
-      if alive && aliveNeighbours < 2 then makeDead(row, col)
-      else if alive && (aliveNeighbours == 2 || aliveNeighbours == 3) then
-        makeAlive(row, col)
-      else if alive && aliveNeighbours > 3 then makeDead(row, col)
-      else if !alive && aliveNeighbours == 3 then makeAlive(row, col)
-      else make(row, col, alive)
-
-    generations += 1
-
-    rotateBuffer()
-    render()
+    f
     val t1 = Performance.now()
 
-    val duration = (t1-t0).toInt
+    register((t1 - t0).toInt)
+  end measure
 
-    rollingAverage.add(duration)
+
+  def tick() =
+    measure(computationPerf.add):
+      val buffer = inactive
+      for
+        row <- 0 until cells
+        col <- 0 until cells
+      do
+        val alive = isLive(row, col)
+        val aliveNeighbours = countNeighbours(row, col)
+
+        if alive && aliveNeighbours < 2 then makeDead(row, col)
+        else if alive && (aliveNeighbours == 2 || aliveNeighbours == 3) then
+          makeAlive(row, col)
+        else if alive && aliveNeighbours > 3 then makeDead(row, col)
+        else if !alive && aliveNeighbours == 3 then makeAlive(row, col)
+        else make(row, col, alive)
+
+      generations += 1
+
+      rotateBuffer()
+
+    measure(renderingPerf.add)(render())
 
     if generations % 5 == 0 then
-      perf.innerText = s"[${rollingAverage.avg().toInt}ms rolling average per generation]"
+      val computing = computationPerf.avg().toInt
+      val rendering  = renderingPerf.avg().toInt
+      perf.innerText = s"[computing: ${computing}ms, rendering: ${rendering}ms; rolling average per generation]"
   end tick
 
   enum GameState:
